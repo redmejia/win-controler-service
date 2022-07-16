@@ -6,5 +6,11 @@ import (
 )
 
 func Router(api *api.ApiConfig) http.Handler {
-	return nil
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/api/tx", api.TxControler)
+
+	return mux
+
 }

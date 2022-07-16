@@ -16,14 +16,15 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 
 	a.Infolog.Println("trying ", tx)
 
-	txStatus := checkTx(&tx)
+	txStatus := checkTx(a, &tx)
 
 	a.Infolog.Println(txStatus)
 
 }
 
 // checkTx check transaction
-func checkTx(inProcessTx *models.Transaction) models.TransactionStatus {
+func checkTx(a *ApiConfig, inProcessTx *models.Transaction) models.TransactionStatus {
+
 	url := fmt.Sprintf("http://localhost:8083/api/txintent?card=%s&cv=%s&amount=%d",
 		inProcessTx.TxCardNumber, inProcessTx.TxCardCv, inProcessTx.TxAmount)
 
@@ -32,6 +33,10 @@ func checkTx(inProcessTx *models.Transaction) models.TransactionStatus {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusAccepted {
+		a.Errorlog.Fatalf("bad status code expect %d but %d was recived insted ", http.StatusAccepted, resp.StatusCode)
+	}
 
 	var txStatus models.TransactionStatus
 	json.NewDecoder(resp.Body).Decode(&txStatus)

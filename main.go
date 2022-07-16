@@ -21,9 +21,9 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    controler.Port,
-		Handler: router.Rouer(&controler),
+		Handler: router.Router(&controler),
 	}
 
-	infoLog.Printf("Service running at http://localhost:%s", controler.Port)
+	infoLog.Printf("Service running at http://localhost:%s\n", controler.Port)
 	errorLog.Fatal(srv.ListenAndServe())
 }

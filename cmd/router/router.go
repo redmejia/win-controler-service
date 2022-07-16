@@ -5,6 +5,6 @@ import (
 	"win/controler/cmd/api"
 )
 
-func Rouer(api *api.ApiConfig) http.Handler {
+func Router(api *api.ApiConfig) http.Handler {
 	return nil
 }

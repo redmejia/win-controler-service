@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 	"win/controler/internal/models"
 )
 
@@ -18,7 +19,42 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 
 	txStatus := checkTx(a, &tx)
 
-	a.Infolog.Println(txStatus)
+	if txStatus.Proceed && txStatus.TxStatusCode == 2 {
+		tx.TxDate = time.Now()
+		txData := models.TransactionData{
+			TxAccepted:   txStatus.Proceed,
+			MessageState: txStatus.TxMessage,
+			Date:         time.Now(),
+			Transaction:  tx,
+		}
+
+		dataByte, err := json.Marshal(txData)
+		if err != nil {
+			a.Errorlog.Fatal(err)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(dataByte)
+
+	} else {
+		txData := models.TransactionData{
+			TxAccepted:   txStatus.Proceed,
+			MessageState: txStatus.TxMessage,
+			Date:         time.Now(),
+			// Transaction:  tx,
+		}
+
+		dataByte, err := json.Marshal(txData)
+		if err != nil {
+			a.Errorlog.Fatal(err)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write(dataByte)
+
+	}
 
 }
 
@@ -35,7 +71,8 @@ func checkTx(a *ApiConfig, inProcessTx *models.Transaction) models.TransactionSt
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusAccepted {
-		a.Errorlog.Fatalf("bad status code expect %d but %d was recived insted ", http.StatusAccepted, resp.StatusCode)
+		a.Errorlog.Fatalf("bad status code expect %d but %d was recived insted ",
+			http.StatusAccepted, resp.StatusCode)
 	}
 
 	var txStatus models.TransactionStatus

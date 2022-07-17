@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 	"win/controler/internal/models"
+	"win/controler/utils"
 )
 
 // TxControler Transaction Controler
@@ -28,14 +29,10 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 			Transaction:  tx,
 		}
 
-		dataByte, err := json.Marshal(txData)
+		err := utils.WriteJSON(w, http.StatusOK, txData)
 		if err != nil {
-			a.Errorlog.Fatal(err)
+			a.Errorlog.Println(err)
 		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(dataByte)
 
 	} else {
 		txData := models.TransactionData{
@@ -44,15 +41,10 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 			Date:         time.Now(),
 			// Transaction:  tx,
 		}
-
-		dataByte, err := json.Marshal(txData)
+		err := utils.WriteJSON(w, http.StatusOK, txData)
 		if err != nil {
-			a.Errorlog.Fatal(err)
+			a.Errorlog.Println(err)
 		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write(dataByte)
 
 	}
 

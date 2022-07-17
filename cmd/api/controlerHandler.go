@@ -14,9 +14,10 @@ import (
 func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 	var tx models.Transaction
 
-	json.NewDecoder(r.Body).Decode(&tx)
-
-	a.Infolog.Println("trying ", tx)
+	err := utils.ReadJSON(r, &tx)
+	if err != nil {
+		a.Errorlog.Fatal(err)
+	}
 
 	txStatus := checkTx(a, &tx)
 

@@ -21,3 +21,13 @@ func WriteJSON(w http.ResponseWriter, statusCode int, data any) error {
 
 	return nil
 }
+
+func ReadJSON(r *http.Request, data any) error {
+	decode := json.NewDecoder(r.Body)
+	err := decode.Decode(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

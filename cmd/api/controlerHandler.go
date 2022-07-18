@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -30,6 +31,10 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 			Transaction:  tx,
 		}
 
+		createEnvoice(a, txData)
+
+		a.Infolog.Println(txData)
+
 		err := utils.WriteJSON(w, http.StatusOK, txData)
 		if err != nil {
 			a.Errorlog.Println(err)
@@ -47,6 +52,30 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 			a.Errorlog.Println(err)
 		}
 
+	}
+
+}
+
+func createEnvoice(a *ApiConfig, txData models.TransactionData) {
+
+	url := "http://localhost:8089/api/env"
+
+	data, err := json.Marshal(txData)
+	if err != nil {
+		a.Errorlog.Fatal(err)
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	if err != nil {
+		a.Errorlog.Fatal(err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	_, err = client.Do(req)
+	if err != nil {
+		a.Errorlog.Fatal(err)
 	}
 
 }

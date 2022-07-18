@@ -47,6 +47,7 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 			Date:         time.Now(),
 			// Transaction:  tx,
 		}
+		// declinePending() // no envoice was created but trasanction decline is save for record
 		err := utils.WriteJSON(w, http.StatusOK, txData)
 		if err != nil {
 			a.Errorlog.Println(err)
@@ -56,6 +57,7 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// createEnvoice create envoice if the transaction was accepted
 func createEnvoice(a *ApiConfig, txData models.TransactionData) {
 
 	url := "http://localhost:8089/api/env"
@@ -73,11 +75,18 @@ func createEnvoice(a *ApiConfig, txData models.TransactionData) {
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
+
+	// must response with the envoice information
 	_, err = client.Do(req)
 	if err != nil {
 		a.Errorlog.Fatal(err)
 	}
 
+}
+
+// declinePending transaction was declined
+func declinedPending() {
+	return
 }
 
 // checkTx check transaction

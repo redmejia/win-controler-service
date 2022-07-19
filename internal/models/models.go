@@ -42,3 +42,10 @@ type TransactionData struct {
 	Date         time.Time   `json:"date"`
 	Transaction  Transaction `json:"transaction"`
 }
+
+// EnvoiceInfo record created
+type EnvoiceInfo struct {
+	Recived       bool   `json:"recived"`        // request was recived
+	RecordCreated bool   `json:"record_created"` // new record was created no metter accepted or declined
+	EnvoUUID      string `json:"envo_uuid"`
+}

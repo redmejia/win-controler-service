@@ -31,11 +31,11 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 			Transaction:  tx,
 		}
 
-		createEnvoice(a, txData)
+		envoInfo := createEnvoice(a, txData)
 
-		a.Infolog.Println(txData)
+		a.Infolog.Println(envoInfo)
 
-		err := utils.WriteJSON(w, http.StatusOK, txData)
+		err := utils.WriteJSON(w, http.StatusOK, envoInfo)
 		if err != nil {
 			a.Errorlog.Println(err)
 		}
@@ -58,7 +58,7 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 }
 
 // createEnvoice create envoice if the transaction was accepted
-func createEnvoice(a *ApiConfig, txData models.TransactionData) {
+func createEnvoice(a *ApiConfig, txData models.TransactionData) models.EnvoiceInfo {
 
 	url := "http://localhost:8089/api/env"
 
@@ -77,11 +77,21 @@ func createEnvoice(a *ApiConfig, txData models.TransactionData) {
 	client := &http.Client{}
 
 	// must response with the envoice information
-	_, err = client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		a.Errorlog.Fatal(err)
 	}
+	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusCreated {
+		a.Errorlog.Fatalf("bad response expected %d status code but recived %d ",
+			http.StatusCreated, resp.StatusCode)
+	}
+
+	var envoiceInfo models.EnvoiceInfo
+	json.NewDecoder(resp.Body).Decode(&envoiceInfo)
+
+	return envoiceInfo
 }
 
 // declinePending transaction was declined

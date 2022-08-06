@@ -14,7 +14,7 @@ func main() {
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime)
 
 	controler := api.ApiConfig{
-		Port:     ":8080",
+		Port:     ":80",
 		Infolog:  infoLog,
 		Errorlog: errorLog,
 	}
@@ -24,6 +24,6 @@ func main() {
 		Handler: router.Router(&controler),
 	}
 
-	infoLog.Printf("Service running at http://localhost:%s\n", controler.Port)
+	infoLog.Printf("Service running at http://localhost%s\n", controler.Port)
 	errorLog.Fatal(srv.ListenAndServe())
 }

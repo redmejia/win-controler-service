@@ -11,6 +11,10 @@ import (
 	"win/controler/utils"
 )
 
+func (a *ApiConfig) Hello(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "hello world")
+}
+
 // TxControler Transaction Controler
 func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 	var tx models.Transaction

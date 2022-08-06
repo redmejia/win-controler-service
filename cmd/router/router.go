@@ -8,7 +8,7 @@ import (
 func Router(api *api.ApiConfig) http.Handler {
 
 	mux := http.NewServeMux()
-
+	mux.HandleFunc("/", api.Hello)
 	mux.HandleFunc("/api/tx", api.TxControler)
 
 	return mux

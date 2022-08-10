@@ -16,7 +16,7 @@ func (a *ApiConfig) Hello(w http.ResponseWriter, r *http.Request) {
 }
 
 // TxControler Transaction Controler
-func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
+func (a *ApiConfig) TxHandler(w http.ResponseWriter, r *http.Request) {
 	var tx models.Transaction
 
 	err := utils.ReadJSON(r, &tx)
@@ -51,7 +51,7 @@ func (a *ApiConfig) TxControler(w http.ResponseWriter, r *http.Request) {
 			Date:         time.Now(),
 			// Transaction:  tx,
 		}
-		// declinePending() // no envoice was created but trasanction decline is save for record
+		// declinePending() no envoice was created but trasanction decline is save for record
 		err := utils.WriteJSON(w, http.StatusOK, txData)
 		if err != nil {
 			a.Errorlog.Println(err)

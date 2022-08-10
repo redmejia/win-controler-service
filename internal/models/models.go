@@ -19,12 +19,23 @@ type BillingInfo struct {
 
 // Transaction
 type Transaction struct {
+	CompanyUID   string               `json:"company_uid"`
 	Product      ProductSpecification `json:"product"` // Business product specification
 	TxAmount     int                  `json:"tx_amount"`
 	TxDate       time.Time            `json:"tx_date"`
 	TxCardNumber string               `json:"tx_card_number"`
 	TxCardCv     string               `json:"tx_card_cv"`
 	BillingInfo  BillingInfo          `json:"billing_info"`
+}
+
+// CompanyEnvoice
+type CompanyEnvoice struct {
+	ID           string      `json:"_id"`
+	Date         string      `json:"date"`
+	EnvoiceUUID  string      `json:"envoice_uuid"`
+	MessageState string      `json:"message_state"`
+	TxAccepted   bool        `json:"tx_accepted"`
+	Transaction  Transaction `json:"transaction"`
 }
 
 // TransactionStatus

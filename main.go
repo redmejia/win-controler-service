@@ -14,7 +14,7 @@ func main() {
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime)
 
 	controler := api.ApiConfig{
-		Port:     ":80",
+		Port:     ":8081",
 		Infolog:  infoLog,
 		Errorlog: errorLog,
 	}

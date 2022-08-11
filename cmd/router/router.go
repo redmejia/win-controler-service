@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 	"win/controler/cmd/api"
+	"win/controler/cmd/middleware"
 )
 
 func Router(api *api.ApiConfig) http.Handler {
@@ -12,6 +13,6 @@ func Router(api *api.ApiConfig) http.Handler {
 	mux.HandleFunc("/api/tx", api.TxHandler)
 	mux.HandleFunc("/api/env", api.EnvoiceHandler)
 
-	return mux
+	return middleware.Cors(mux)
 
 }

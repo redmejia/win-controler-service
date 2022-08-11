@@ -44,18 +44,30 @@ func (a *ApiConfig) TxHandler(w http.ResponseWriter, r *http.Request) {
 			a.Errorlog.Println(err)
 		}
 
-	} else {
+	}
+	// create envoice with decline status
+	if txStatus.Proceed == false && txStatus.TxStatusCode == 4 {
+		tx.TxDate = time.Now()
 		txData := models.TransactionData{
 			TxAccepted:   txStatus.Proceed,
 			MessageState: txStatus.TxMessage,
 			Date:         time.Now(),
-			// Transaction:  tx,
+			Transaction:  tx,
 		}
-		// declinePending() no envoice was created but trasanction decline is save for record
-		err := utils.WriteJSON(w, http.StatusOK, txData)
+
+		envoInfo := createEnvoice(a, txData)
+
+		a.Infolog.Println(envoInfo)
+
+		err := utils.WriteJSON(w, http.StatusOK, envoInfo)
 		if err != nil {
 			a.Errorlog.Println(err)
 		}
+		// declinePending() no envoice was created but trasanction decline is save for record
+		// err := utils.WriteJSON(w, http.StatusOK, txData)
+		// if err != nil {
+		// 	a.Errorlog.Println(err)
+		// }
 
 	}
 

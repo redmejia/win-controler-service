@@ -25,7 +25,8 @@ func (a *ApiConfig) TxHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	txStatus := checkTx(a, &tx)
-
+	// status code 2 is accepted
+	// create envoice with accepted status
 	if txStatus.Proceed && txStatus.TxStatusCode == 2 {
 		tx.TxDate = time.Now()
 		txData := models.TransactionData{
@@ -45,8 +46,9 @@ func (a *ApiConfig) TxHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+	// status code 4 is decline status
 	// create envoice with decline status
-	if txStatus.Proceed == false && txStatus.TxStatusCode == 4 {
+	if txStatus.TxStatusCode == 4 {
 		tx.TxDate = time.Now()
 		txData := models.TransactionData{
 			TxAccepted:   txStatus.Proceed,

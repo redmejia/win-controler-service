@@ -11,7 +11,8 @@ func Router(api *api.ApiConfig) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", api.Hello)
 	mux.HandleFunc("/api/tx", api.TxHandler)
-	mux.HandleFunc("/api/env", api.EnvoiceHandler)
+	mux.HandleFunc("/api/env", api.EnvoiceAllHandler)
+	mux.HandleFunc("/api/env/num", api.EnvoiceOneHandler)
 
 	return middleware.Cors(mux)
 
